@@ -20,10 +20,11 @@ public class CartRepositoryTests {
     CartRepository cartRepository;
 
     @Test
-    @DisplayName("장바구니에 등록하지 않았던 상품의 경우 Cart가 create된다")
-    void createWhenUpsertTest() {
+    @DisplayName("장바구니에 처음 등록하는 회원의 경우 Cart가 create된다")
+    void createNewDocumentTest() {
         // given
         Long memberId = 1L;
+
         // when
         cartRepository.upsert(memberId, UpsertCartRequest.builder()
                 .productId(1L)
@@ -33,8 +34,30 @@ public class CartRepositoryTests {
                 .build());
 
         // then
-        Optional<Cart> cart = cartRepository.findById(memberId);
-//        Assertions.assertEquals(cart.size(), 1L);
+        Cart cart = cartRepository.findById(memberId).orElseThrow();
+    }
+
+    @Test
+    @DisplayName("장바구니에 상품을 추가할 경우 cartItems에 insert된다")
+    void createNewCartItemTest() {
+        // given
+        Long memberId = 1L;
+        cartRepository.save(Cart.builder()
+                .memberId(memberId)
+                .cartItems(List.of(Cart.CartItem.builder().productId(1L).productSizeId(1L).quantity(10L).build()))
+                .build());
+
+        // when
+        cartRepository.upsert(memberId, UpsertCartRequest.builder()
+                .productId(2L)
+                .productSizeId(2L)
+                .quantity(20L)
+                .lastMemberCode("TEST")
+                .build());
+
+        // then
+        Cart cart = cartRepository.findById(memberId).orElseThrow();
+        Assertions.assertEquals(cart.getCartItems().size(), 2L);
     }
 
     @Test
@@ -57,6 +80,7 @@ public class CartRepositoryTests {
         // then
         List<Cart.CartItem> cartItems = cartRepository.findById(memberId).orElseThrow().getCartItems();
         Assertions.assertEquals(cartItems.size(), 1);
+        Assertions.assertNull(cartItems.get(0).getLastMemberCode());
         Assertions.assertEquals(cartItems.get(0).getQuantity(), 20L);
     }
 
