@@ -9,23 +9,11 @@ spring:
     port: 5672
     username: guest
     password: guest
-  datasource:
 
   # mongodb settings
   data:
     mongodb:
-      username: root
-      password: 11111111
-      uri: mongodb://localhost:27017/wish-cart-service
-  jpa:
-    hibernate:
-      ddl-auto: create
-    generate-ddl: true
-    # Bean이 생성되기 전에 ddl 실행
-    defer-datasource-initialization: true
-    properties:
-      hibernate:
-        format_sql: true
+      uri: mongodb://root:11111111@localhost:27017/wish-cart-service?authSource=admin
 
 eureka:
   client:
