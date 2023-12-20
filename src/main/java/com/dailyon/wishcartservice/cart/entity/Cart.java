@@ -18,10 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Document
 public class Cart {
-    @MongoId
-    private Long id;
-
-    @Field(targetType = FieldType.INT64)
+    @MongoId(targetType = FieldType.INT64)
     private Long memberId;
 
     @Field(targetType = FieldType.ARRAY, write = Field.Write.NON_NULL)
@@ -31,8 +28,6 @@ public class Cart {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-//    @Document(value = "cartItem")
-    @CompoundIndex(def = "{'memberId': 1, 'productId': 1, 'productSizeId': 1}")
     public static class CartItem {
         @Field(targetType = FieldType.INT64, write = Field.Write.NON_NULL)
         private Long productId;
