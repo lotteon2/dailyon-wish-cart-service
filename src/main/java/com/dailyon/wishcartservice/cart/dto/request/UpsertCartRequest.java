@@ -12,12 +12,14 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpsertCartRequest {
-    @NotNull
+    @NotNull(message = "상품을 입력해주세요")
     private Long productId;
-    @NotNull
+
+    @NotNull(message = "치수를 입력해주세요")
     private Long productSizeId;
-    @NotNull
-    private Long quantity;
+
+    @NotNull(message = "개수를 입력해주세요")
+    private Integer quantity;
 
     private String lastMemberCode;
 }

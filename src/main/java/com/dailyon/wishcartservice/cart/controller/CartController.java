@@ -6,15 +6,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RequestMapping("/cart")
 @RestController
 @RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
 
-    @PutMapping
+    @PostMapping
     public ResponseEntity<Void> upsertCart(@RequestHeader(name = "memberId") Long memberId,
-                                           @RequestBody UpsertCartRequest upsertCartRequest) {
+                                           @Valid @RequestBody UpsertCartRequest upsertCartRequest) {
         cartService.upsert(memberId, upsertCartRequest);
         return ResponseEntity.ok().build();
     }
