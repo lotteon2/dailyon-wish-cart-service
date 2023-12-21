@@ -1,5 +1,6 @@
 package com.dailyon.wishcartservice.controller;
 
+import com.dailyon.wishcartservice.cart.dto.request.DeleteCartListRequest;
 import com.dailyon.wishcartservice.cart.dto.request.UpsertCartRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -67,6 +70,27 @@ public class CartControllerTests {
         // then
         resultActions
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("개수를 입력해주세요"));
+    }
+
+    @Test
+    @DisplayName("장바구니 삭제 성공")
+    void deleteCartSuccess() throws Exception {
+        // given
+        DeleteCartListRequest request = DeleteCartListRequest.builder()
+                .requests(List.of(
+                        DeleteCartListRequest.DeleteCartRequest.builder().productSizeId(1L).productId(1L).build(),
+                        DeleteCartListRequest.DeleteCartRequest.builder().productSizeId(1L).productId(1L).build())
+                ).build();
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                delete("/cart")
+                        .header("memberId", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+        );
+
+        // then
+        resultActions.andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

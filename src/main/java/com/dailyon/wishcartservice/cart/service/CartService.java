@@ -1,5 +1,6 @@
 package com.dailyon.wishcartservice.cart.service;
 
+import com.dailyon.wishcartservice.cart.dto.request.DeleteCartListRequest;
 import com.dailyon.wishcartservice.cart.dto.request.UpsertCartRequest;
 import com.dailyon.wishcartservice.cart.entity.Cart;
 import com.dailyon.wishcartservice.cart.repository.CartRepository;
@@ -43,5 +44,10 @@ public class CartService {
 
             return cartRepository.save(cart.get());
         }
+    }
+
+    @Transactional
+    public void deleteCarts(Long memberId, DeleteCartListRequest request) {
+        cartRepository.delete(memberId, request.getRequests());
     }
 }
