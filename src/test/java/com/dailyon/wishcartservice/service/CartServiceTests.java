@@ -1,23 +1,32 @@
-package com.dailyon.wishcartservice.respository;
+package com.dailyon.wishcartservice.service;
 
 import com.dailyon.wishcartservice.cart.dto.request.UpsertCartRequest;
 import com.dailyon.wishcartservice.cart.entity.Cart;
 import com.dailyon.wishcartservice.cart.repository.CartRepository;
+import com.dailyon.wishcartservice.cart.service.CartService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
-import java.util.Optional;
 
-@DataMongoTest
+@SpringBootTest
 @ActiveProfiles("test")
-public class CartRepositoryTests {
+public class CartServiceTests {
     @Autowired
     CartRepository cartRepository;
+
+    @Autowired
+    CartService cartService;
+
+    @BeforeEach
+    void beforeEach() {
+        cartRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("장바구니에 처음 등록하는 회원의 경우 Cart가 create된다")
@@ -26,15 +35,20 @@ public class CartRepositoryTests {
         Long memberId = 1L;
 
         // when
-        cartRepository.upsert(memberId, UpsertCartRequest.builder()
+        cartService.upsert(memberId, UpsertCartRequest.builder()
                 .productId(1L)
                 .productSizeId(1L)
-                .quantity(1L)
+                .quantity(1)
                 .lastMemberCode("TEST")
                 .build());
 
         // then
         Cart cart = cartRepository.findById(memberId).orElseThrow();
+        Assertions.assertEquals(cart.getCartItems().size(), 1L);
+        Assertions.assertEquals(cart.getCartItems().get(0).getProductId(), 1L);
+        Assertions.assertEquals(cart.getCartItems().get(0).getProductSizeId(), 1L);
+        Assertions.assertEquals(cart.getCartItems().get(0).getQuantity(), 1);
+        Assertions.assertEquals(cart.getCartItems().get(0).getLastMemberCode(), "TEST");
     }
 
     @Test
@@ -44,14 +58,14 @@ public class CartRepositoryTests {
         Long memberId = 1L;
         cartRepository.save(Cart.builder()
                 .memberId(memberId)
-                .cartItems(List.of(Cart.CartItem.builder().productId(1L).productSizeId(1L).quantity(10L).build()))
+                .cartItems(List.of(Cart.CartItem.builder().productId(1L).productSizeId(1L).quantity(10).build()))
                 .build());
 
         // when
-        cartRepository.upsert(memberId, UpsertCartRequest.builder()
+        cartService.upsert(memberId, UpsertCartRequest.builder()
                 .productId(2L)
                 .productSizeId(2L)
-                .quantity(20L)
+                .quantity(20)
                 .lastMemberCode("TEST")
                 .build());
 
@@ -61,75 +75,51 @@ public class CartRepositoryTests {
     }
 
     @Test
-    @DisplayName("장바구니에 등록했던 상품의 경우 Cart가 update된다 - 재고만 수정")
+    @DisplayName("장바구니에 등록했던 상품의 경우 Cart가 update된다 - 개수 추가")
     void updateWhenUpsertTest1() {
         // given
         Long memberId = 1L;
         cartRepository.save(Cart.builder()
                 .memberId(memberId)
-                .cartItems(List.of(Cart.CartItem.builder().productId(1L).productSizeId(1L).quantity(10L).build()))
+                .cartItems(List.of(Cart.CartItem.builder().productId(1L).productSizeId(1L).quantity(10).build()))
                 .build());
 
         // when
-        cartRepository.upsert(memberId, UpsertCartRequest.builder()
+        cartService.upsert(memberId, UpsertCartRequest.builder()
                 .productId(1L)
                 .productSizeId(1L)
-                .quantity(20L)
+                .quantity(20)
                 .build());
 
         // then
         List<Cart.CartItem> cartItems = cartRepository.findById(memberId).orElseThrow().getCartItems();
         Assertions.assertEquals(cartItems.size(), 1);
         Assertions.assertNull(cartItems.get(0).getLastMemberCode());
-        Assertions.assertEquals(cartItems.get(0).getQuantity(), 20L);
+        Assertions.assertEquals(cartItems.get(0).getQuantity(), 30);
     }
 
     @Test
-    @DisplayName("장바구니에 등록했던 상품의 경우 Cart가 update된다 - 재고와 마지막 추천인 수정")
+    @DisplayName("장바구니에 등록했던 상품의 경우 Cart가 update된다 - 개수와 마지막 추천인 수정")
     void updateWhenUpsertTest2() {
         // given
         Long memberId = 1L;
         cartRepository.save(Cart.builder()
                 .memberId(memberId)
-                .cartItems(List.of(Cart.CartItem.builder().productId(1L).productSizeId(1L).quantity(10L).lastMemberCode("BEFORE").build()))
+                .cartItems(List.of(Cart.CartItem.builder().productId(1L).productSizeId(1L).quantity(10).lastMemberCode("BEFORE").build()))
                 .build());
 
         // when
-        cartRepository.upsert(memberId, UpsertCartRequest.builder()
+        cartService.upsert(memberId, UpsertCartRequest.builder()
                 .productId(1L)
                 .productSizeId(1L)
-                .quantity(20L)
+                .quantity(20)
                 .lastMemberCode("AFTER")
                 .build());
 
         // then
         List<Cart.CartItem> cartItems = cartRepository.findById(memberId).orElseThrow().getCartItems();
         Assertions.assertEquals(cartItems.size(), 1);
-        Assertions.assertEquals(cartItems.get(0).getQuantity(), 20L);
+        Assertions.assertEquals(cartItems.get(0).getQuantity(), 30);
         Assertions.assertEquals(cartItems.get(0).getLastMemberCode(), "AFTER");
-    }
-
-    @Test
-    @DisplayName("장바구니에 등록했던 상품의 경우 Cart가 update된다 - 마지막 추천인 새로 등록")
-    void updateWhenUpsertTest3() {
-        // given
-        Long memberId = 1L;
-        cartRepository.save(Cart.builder()
-                .memberId(memberId)
-                .cartItems(List.of(Cart.CartItem.builder().productId(1L).productSizeId(1L).quantity(10L).build()))
-                .build());
-
-        // when
-        cartRepository.upsert(memberId, UpsertCartRequest.builder()
-                .productId(1L)
-                .productSizeId(1L)
-                .quantity(10L)
-                .lastMemberCode("TEST")
-                .build());
-
-        // then
-        List<Cart.CartItem> cartItems = cartRepository.findById(memberId).orElseThrow().getCartItems();
-        Assertions.assertEquals(cartItems.size(), 1);
-        Assertions.assertEquals(cartItems.get(0).getLastMemberCode(), "TEST");
     }
 }
