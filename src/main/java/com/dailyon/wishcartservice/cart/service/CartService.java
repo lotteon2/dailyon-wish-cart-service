@@ -50,4 +50,8 @@ public class CartService {
     public void deleteCarts(Long memberId, DeleteCartListRequest request) {
         cartRepository.delete(memberId, request.getRequests());
     }
+
+    public Optional<Cart> read(Long memberId) {
+        return cartRepository.findById(memberId);
+    }
 }
