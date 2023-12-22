@@ -69,6 +69,10 @@ public class Cart {
                     .build();
         }
 
+        public String toKey() {
+            return "pid=" + this.productId + "&psid=" + this.productSizeId;
+        }
+
         public void setQuantity(Integer quantity) {
             this.quantity = quantity;
         }

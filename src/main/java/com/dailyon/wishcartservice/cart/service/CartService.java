@@ -3,8 +3,11 @@ package com.dailyon.wishcartservice.cart.service;
 import com.dailyon.wishcartservice.cart.dto.request.DeleteCartListRequest;
 import com.dailyon.wishcartservice.cart.dto.request.UpsertCartRequest;
 import com.dailyon.wishcartservice.cart.entity.Cart;
+import static com.dailyon.wishcartservice.cart.entity.Cart.CartItem;
 import com.dailyon.wishcartservice.cart.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,5 +52,9 @@ public class CartService {
     @Transactional
     public void deleteCarts(Long memberId, DeleteCartListRequest request) {
         cartRepository.delete(memberId, request.getRequests());
+    }
+
+    public Page<CartItem> readPages(Long memberId, Pageable pageable) {
+        return cartRepository.readPages(memberId, pageable);
     }
 }
