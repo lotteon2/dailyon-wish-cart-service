@@ -1,14 +1,14 @@
 package com.dailyon.wishcartservice.cart.dto.response;
 
 import static com.dailyon.wishcartservice.cart.entity.Cart.CartItem;
-import static com.dailyon.wishcartservice.common.feign.response.ReadWishCartProductListResponse.ReadWishCartProductResponse;
+import static com.dailyon.wishcartservice.common.feign.response.ReadWishCartProductMapResponse.ReadWishCartProductResponse;
 
-import com.dailyon.wishcartservice.cart.entity.Cart;
-import com.dailyon.wishcartservice.common.feign.response.ReadWishCartProductListResponse;
+import com.dailyon.wishcartservice.common.feign.response.ReadWishCartProductMapResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,16 +17,19 @@ import java.util.stream.Collectors;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReadCartListResponse {
+public class ReadCartPageResponse {
+    private Long totalElements;
+    private Integer totalPages;
     private List<ReadCartResponse> responses;
 
-    public static ReadCartListResponse create(Cart cart, ReadWishCartProductListResponse responses) {
-        return ReadCartListResponse.builder().responses(cart.getCartItems().stream()
-                .flatMap(cartItem -> responses.getResponses().stream()
-                        .filter(response -> cartItem.getProductId().equals(response.getProductId()) &&
-                                cartItem.getProductSizeId().equals(response.getProductSizeId()))
-                        .map(response -> ReadCartResponse.create(cartItem, response)))
-                .collect(Collectors.toList())).build();
+    public static ReadCartPageResponse create(Page<CartItem> cartItems, ReadWishCartProductMapResponse response) {
+        return ReadCartPageResponse.builder()
+                .totalPages(cartItems.getTotalPages())
+                .totalElements(cartItems.getTotalElements())
+                .responses(cartItems.stream().map(
+                        cartItem -> ReadCartResponse.create(cartItem, response.getResponses().get(cartItem.toKey()))
+                ).collect(Collectors.toList()))
+                .build();
     }
 
     @Getter
