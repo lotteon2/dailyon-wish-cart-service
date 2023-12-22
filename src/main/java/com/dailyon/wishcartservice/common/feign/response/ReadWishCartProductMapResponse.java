@@ -5,14 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReadWishCartProductListResponse {
-    private List<ReadWishCartProductResponse> responses;
+public class ReadWishCartProductMapResponse {
+    private Map<String, ReadWishCartProductResponse> responses;
 
     @Getter
     @Builder
