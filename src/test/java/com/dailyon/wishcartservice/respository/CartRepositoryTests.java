@@ -8,6 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import static com.dailyon.wishcartservice.cart.dto.request.DeleteCartListRequest.DeleteCartRequest;
@@ -51,5 +53,24 @@ public class CartRepositoryTests {
 
         Cart deletedCart2 = cartRepository.findById(cart2.getMemberId()).orElseThrow();
         Assertions.assertEquals(deletedCart2.getCartItems().size(), 3);
+    }
+
+    @Test
+    @DisplayName("장바구니 페이지네이션 조회")
+    void readPagesTest() {
+        cartRepository.save(Cart.builder()
+                .memberId(1L)
+                .cartItems(
+                        List.of(Cart.CartItem.init(1L, 1L, 1, ""),
+                                Cart.CartItem.init(1L, 1L, 1, ""),
+                                Cart.CartItem.init(1L, 1L, 1, ""))
+                )
+                .build());
+
+        Page<Cart.CartItem> cartItems = cartRepository.readPages(1L, Pageable.ofSize(5));
+
+        Assertions.assertEquals(cartItems.getContent().size(), 3);
+        Assertions.assertEquals(cartItems.getTotalElements(), 3);
+        Assertions.assertEquals(cartItems.getTotalPages(), 1);
     }
 }
