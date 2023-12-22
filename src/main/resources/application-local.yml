@@ -29,3 +29,5 @@ logging:
     org:
       hibernate:
         SQL: DEBUG
+
+endpoint.product-service: localhost:8085

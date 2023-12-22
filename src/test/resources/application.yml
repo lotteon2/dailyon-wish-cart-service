@@ -13,3 +13,5 @@ spring:
 logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+endpoint.product-service: localhost:8085

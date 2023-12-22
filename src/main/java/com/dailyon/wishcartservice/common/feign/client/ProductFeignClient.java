@@ -2,7 +2,7 @@ package com.dailyon.wishcartservice.common.feign.client;
 
 import com.dailyon.wishcartservice.common.config.FeignClientConfig;
 import com.dailyon.wishcartservice.common.feign.request.ReadWishCartProductRequest;
-import com.dailyon.wishcartservice.common.feign.response.ReadWishCartProductListResponse;
+import com.dailyon.wishcartservice.common.feign.response.ReadWishCartProductMapResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,5 +17,5 @@ import java.util.List;
 )
 public interface ProductFeignClient {
     @PostMapping(value = "/clients/products/wish-cart")
-    ResponseEntity<ReadWishCartProductListResponse> readWishCartProducts(@RequestBody List<ReadWishCartProductRequest> requests);
+    ResponseEntity<ReadWishCartProductMapResponse> readWishCartProducts(@RequestBody List<ReadWishCartProductRequest> requests);
 }
