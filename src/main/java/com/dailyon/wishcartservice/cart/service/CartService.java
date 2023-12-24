@@ -1,6 +1,7 @@
 package com.dailyon.wishcartservice.cart.service;
 
 import com.dailyon.wishcartservice.cart.dto.request.DeleteCartListRequest;
+import com.dailyon.wishcartservice.cart.dto.request.UpdateCartRequest;
 import com.dailyon.wishcartservice.cart.dto.request.UpsertCartRequest;
 import com.dailyon.wishcartservice.cart.document.Cart;
 import com.dailyon.wishcartservice.cart.repository.CartRepository;
@@ -31,5 +32,13 @@ public class CartService {
 
     public Page<Cart> readPages(Long memberId, Pageable pageable) {
         return cartRepository.readPages(memberId, pageable);
+    }
+
+    @Transactional
+    public void update(Long memberId, UpdateCartRequest updateCartRequest) {
+        cartRepository.update(memberId,
+                updateCartRequest.getProductId(),
+                updateCartRequest.getProductSizeId(),
+                updateCartRequest.getQuantity());
     }
 }

@@ -2,6 +2,7 @@ package com.dailyon.wishcartservice.cart.facade;
 
 import com.dailyon.wishcartservice.cart.document.Cart;
 import com.dailyon.wishcartservice.cart.dto.request.DeleteCartListRequest;
+import com.dailyon.wishcartservice.cart.dto.request.UpdateCartRequest;
 import com.dailyon.wishcartservice.cart.dto.request.UpsertCartRequest;
 import com.dailyon.wishcartservice.cart.dto.response.ReadCartPageResponse;
 
@@ -41,5 +42,9 @@ public class CartFacade {
         ReadWishCartProductMapResponse response = productFeignClient.readWishCartProducts(requests).getBody();
 
         return ReadCartPageResponse.create(cartItems, response);
+    }
+
+    public void update(Long memberId, UpdateCartRequest updateCartRequest) {
+        cartService.update(memberId, updateCartRequest);
     }
 }
