@@ -41,4 +41,22 @@ public class WishListRepositoryTests {
         Assertions.assertEquals(1, wishLists.getTotalPages());
         Assertions.assertEquals(4,wishLists.getTotalElements());
     }
+
+    @Test
+    @DisplayName("기존 찜 삭제")
+    void toggleWishListTest1() {
+        wishListRepository.save(WishList.create(1L, 1L, 1L));
+
+        wishListRepository.toggleWishList(1L, 1L, 1L);
+
+        Assertions.assertEquals(0, wishListRepository.findAll().size());
+    }
+
+    @Test
+    @DisplayName("찜 생성")
+    void toggleWishListTest2() {
+        wishListRepository.toggleWishList(1L, 1L, 1L);
+
+        Assertions.assertEquals(1, wishListRepository.findAll().size());
+    }
 }
