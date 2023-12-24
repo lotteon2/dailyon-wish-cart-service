@@ -1,6 +1,7 @@
 package com.dailyon.wishcartservice.cart.controller;
 
 import com.dailyon.wishcartservice.cart.dto.request.DeleteCartListRequest;
+import com.dailyon.wishcartservice.cart.dto.request.UpdateCartRequest;
 import com.dailyon.wishcartservice.cart.dto.request.UpsertCartRequest;
 import com.dailyon.wishcartservice.cart.dto.response.ReadCartPageResponse;
 import com.dailyon.wishcartservice.cart.facade.CartFacade;
@@ -38,5 +39,12 @@ public class CartController {
             @RequestHeader(name = "memberId") Long memberId,
             @PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(cartFacade.read(memberId, pageable));
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> updateCart(@RequestHeader(name = "memberId") Long memberId,
+                                           @Valid @RequestBody UpdateCartRequest updateCartRequest) {
+        cartFacade.update(memberId, updateCartRequest);
+        return ResponseEntity.ok().build();
     }
 }
