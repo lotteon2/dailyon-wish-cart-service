@@ -38,7 +38,7 @@ public class CartServiceTests {
         cartService.upsert(memberId, UpsertCartRequest.builder()
                 .productId(1L)
                 .productSizeId(1L)
-                .quantity(1)
+                .quantity(1L)
                 .lastMemberCode("TEST")
                 .build());
 
@@ -58,14 +58,14 @@ public class CartServiceTests {
         Long memberId = 1L;
         cartRepository.save(Cart.builder()
                 .memberId(memberId)
-                .cartItems(List.of(Cart.CartItem.builder().productId(1L).productSizeId(1L).quantity(10).build()))
+                .cartItems(List.of(Cart.CartItem.builder().productId(1L).productSizeId(1L).quantity(10L).build()))
                 .build());
 
         // when
         cartService.upsert(memberId, UpsertCartRequest.builder()
                 .productId(2L)
                 .productSizeId(2L)
-                .quantity(20)
+                .quantity(20L)
                 .lastMemberCode("TEST")
                 .build());
 
@@ -81,14 +81,14 @@ public class CartServiceTests {
         Long memberId = 1L;
         cartRepository.save(Cart.builder()
                 .memberId(memberId)
-                .cartItems(List.of(Cart.CartItem.builder().productId(1L).productSizeId(1L).quantity(10).build()))
+                .cartItems(List.of(Cart.CartItem.builder().productId(1L).productSizeId(1L).quantity(10L).build()))
                 .build());
 
         // when
         cartService.upsert(memberId, UpsertCartRequest.builder()
                 .productId(1L)
                 .productSizeId(1L)
-                .quantity(20)
+                .quantity(20L)
                 .build());
 
         // then
@@ -105,14 +105,14 @@ public class CartServiceTests {
         Long memberId = 1L;
         cartRepository.save(Cart.builder()
                 .memberId(memberId)
-                .cartItems(List.of(Cart.CartItem.builder().productId(1L).productSizeId(1L).quantity(10).lastMemberCode("BEFORE").build()))
+                .cartItems(List.of(Cart.CartItem.builder().productId(1L).productSizeId(1L).quantity(10L).lastMemberCode("BEFORE").build()))
                 .build());
 
         // when
         cartService.upsert(memberId, UpsertCartRequest.builder()
                 .productId(1L)
                 .productSizeId(1L)
-                .quantity(20)
+                .quantity(20L)
                 .lastMemberCode("AFTER")
                 .build());
 

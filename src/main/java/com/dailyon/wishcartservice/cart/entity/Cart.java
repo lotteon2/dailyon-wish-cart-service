@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
@@ -23,13 +24,20 @@ public class Cart {
     @MongoId(targetType = FieldType.INT64)
     private Long memberId;
 
-    @Field(targetType = FieldType.ARRAY, write = Field.Write.NON_NULL)
+    @Field(name = "cartItems", targetType = FieldType.ARRAY, write = Field.Write.NON_NULL)
     private List<CartItem> cartItems;
 
-    public static Cart init(Long memberId, Long productId, Long productSizeId, Integer quantity, String lastMemberCode) {
+    public static Cart init(Long memberId, Long productId, Long productSizeId, Long quantity, String lastMemberCode) {
         return Cart.builder()
                 .memberId(memberId)
-                .cartItems(List.of(Cart.CartItem.init(productId, productSizeId, quantity, lastMemberCode)))
+                .cartItems(List.of(Cart.CartItem.create(productId, productSizeId, quantity, lastMemberCode)))
+                .build();
+    }
+
+    public static Cart init(Long memberId, Long productId, Long productSizeId, Long quantity) {
+        return Cart.builder()
+                .memberId(memberId)
+                .cartItems(List.of(Cart.CartItem.create(productId, productSizeId, quantity)))
                 .build();
     }
 
@@ -38,42 +46,49 @@ public class Cart {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CartItem {
-        @Field(targetType = FieldType.INT64, write = Field.Write.NON_NULL)
+        @Field(name = "productId", targetType = FieldType.INT64, write = Field.Write.NON_NULL)
         private Long productId;
 
-        @Field(targetType = FieldType.INT64, write = Field.Write.NON_NULL)
+        @Field(name = "productSizeId", targetType = FieldType.INT64, write = Field.Write.NON_NULL)
         private Long productSizeId;
 
-        @Field(targetType = FieldType.INT32, write = Field.Write.NON_NULL)
-        private Integer quantity;
+        @Field(name = "quantity", targetType = FieldType.INT64, write = Field.Write.NON_NULL)
+        private Long quantity;
 
-        @Field(targetType = FieldType.STRING, write = Field.Write.ALWAYS)
+        @Field(name = "lastMemberCode", targetType = FieldType.STRING, write = Field.Write.ALWAYS)
         private String lastMemberCode;
 
         @CreatedDate
         @Builder.Default
-        @Field(targetType = FieldType.DATE_TIME, write = Field.Write.NON_NULL)
+        @Field(name = "createdAt", targetType = FieldType.DATE_TIME, write = Field.Write.NON_NULL)
         private LocalDateTime createdAt = LocalDateTime.now();
 
         @LastModifiedDate
         @Builder.Default
-        @Field(targetType = FieldType.DATE_TIME, write = Field.Write.NON_NULL)
+        @Field(name = "updateAt", targetType = FieldType.DATE_TIME, write = Field.Write.NON_NULL)
         private LocalDateTime updatedAt = LocalDateTime.now();
 
-        public static Cart.CartItem init(Long productId, Long productSizeId, Integer quantity, String lastMemberCode) {
-            return Cart.CartItem.builder()
+        public static Cart.CartItem create(Long productId, Long productSizeId, Long quantity, String lastMemberCode) {
+            return CartItem.builder()
                     .productId(productId)
                     .productSizeId(productSizeId)
                     .quantity(quantity)
                     .lastMemberCode(lastMemberCode)
                     .build();
         }
-
-        public String toKey() {
-            return "pid=" + this.productId + "&psid=" + this.productSizeId;
+        public static Cart.CartItem create(Long productId, Long productSizeId, Long quantity) {
+            return CartItem.builder()
+                    .productId(productId)
+                    .productSizeId(productSizeId)
+                    .quantity(quantity)
+                    .build();
         }
 
-        public void setQuantity(Integer quantity) {
+        public String toKey() {
+            return "pid=" + this.productId + "&sid=" + this.productSizeId;
+        }
+
+        public void setQuantity(Long quantity) {
             this.quantity = quantity;
         }
 

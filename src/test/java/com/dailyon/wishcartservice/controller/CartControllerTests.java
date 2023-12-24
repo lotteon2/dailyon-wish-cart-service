@@ -35,7 +35,7 @@ public class CartControllerTests {
         UpsertCartRequest upsertCartRequest = UpsertCartRequest.builder()
                 .productId(1L)
                 .productSizeId(1L)
-                .quantity(1)
+                .quantity(1L)
                 .build();
 
         // when

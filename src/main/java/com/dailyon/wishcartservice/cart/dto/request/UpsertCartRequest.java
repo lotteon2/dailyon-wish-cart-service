@@ -19,7 +19,7 @@ public class UpsertCartRequest {
     private Long productSizeId;
 
     @NotNull(message = "개수를 입력해주세요")
-    private Integer quantity;
+    private Long quantity;
 
     private String lastMemberCode;
 }
