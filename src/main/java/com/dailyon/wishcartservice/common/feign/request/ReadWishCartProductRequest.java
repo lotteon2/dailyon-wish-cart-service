@@ -1,6 +1,6 @@
 package com.dailyon.wishcartservice.common.feign.request;
 
-import static com.dailyon.wishcartservice.cart.entity.Cart.CartItem;
+import static com.dailyon.wishcartservice.cart.document.Cart.CartItem;
 
 import com.dailyon.wishcartservice.wishlist.document.WishList;
 import lombok.AllArgsConstructor;

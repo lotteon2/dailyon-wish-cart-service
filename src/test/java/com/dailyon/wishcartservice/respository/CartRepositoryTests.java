@@ -1,6 +1,6 @@
 package com.dailyon.wishcartservice.respository;
 
-import com.dailyon.wishcartservice.cart.entity.Cart;
+import com.dailyon.wishcartservice.cart.document.Cart;
 import com.dailyon.wishcartservice.cart.repository.CartRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

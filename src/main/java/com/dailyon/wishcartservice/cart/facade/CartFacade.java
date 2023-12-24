@@ -3,8 +3,8 @@ package com.dailyon.wishcartservice.cart.facade;
 import com.dailyon.wishcartservice.cart.dto.request.DeleteCartListRequest;
 import com.dailyon.wishcartservice.cart.dto.request.UpsertCartRequest;
 import com.dailyon.wishcartservice.cart.dto.response.ReadCartPageResponse;
-import com.dailyon.wishcartservice.cart.entity.Cart;
-import static com.dailyon.wishcartservice.cart.entity.Cart.CartItem;
+
+import static com.dailyon.wishcartservice.cart.document.Cart.CartItem;
 import com.dailyon.wishcartservice.cart.service.CartService;
 import com.dailyon.wishcartservice.common.feign.client.ProductFeignClient;
 import com.dailyon.wishcartservice.common.feign.request.ReadWishCartProductRequest;
@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component

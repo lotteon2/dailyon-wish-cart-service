@@ -1,6 +1,6 @@
 package com.dailyon.wishcartservice.cart.dto.response;
 
-import static com.dailyon.wishcartservice.cart.entity.Cart.CartItem;
+import static com.dailyon.wishcartservice.cart.document.Cart.CartItem;
 import static com.dailyon.wishcartservice.common.feign.response.ReadWishCartProductMapResponse.ReadWishCartProductResponse;
 
 import com.dailyon.wishcartservice.common.feign.response.ReadWishCartProductMapResponse;

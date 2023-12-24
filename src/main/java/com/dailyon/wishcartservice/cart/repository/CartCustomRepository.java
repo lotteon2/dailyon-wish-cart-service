@@ -2,7 +2,7 @@ package com.dailyon.wishcartservice.cart.repository;
 
 import static com.dailyon.wishcartservice.cart.dto.request.DeleteCartListRequest.DeleteCartRequest;
 import com.dailyon.wishcartservice.cart.dto.request.UpsertCartRequest;
-import static com.dailyon.wishcartservice.cart.entity.Cart.CartItem;
+import static com.dailyon.wishcartservice.cart.document.Cart.CartItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
