@@ -34,8 +34,9 @@ public class CartController {
     }
 
     @GetMapping
-    public ResponseEntity<ReadCartPageResponse> readCart(@RequestHeader(name = "memberId") Long memberId,
-                                                         @PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<ReadCartPageResponse> readCart(
+            @RequestHeader(name = "memberId") Long memberId,
+            @PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(cartFacade.read(memberId, pageable));
     }
 }
