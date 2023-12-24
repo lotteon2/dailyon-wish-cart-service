@@ -3,6 +3,7 @@ package com.dailyon.wishcartservice.respository;
 import com.dailyon.wishcartservice.cart.document.Cart;
 import com.dailyon.wishcartservice.cart.repository.CartRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,55 +22,80 @@ public class CartRepositoryTests {
     @Autowired
     CartRepository cartRepository;
 
+    @BeforeEach
+    void beforeEach() {
+        cartRepository.deleteAll();
+    }
+
+
     @Test
-    @DisplayName("document의 원소 중 productId와 productSizeId가 일치하는 값들만 삭제된다")
-    void deleteTest() {
+    @DisplayName("cart 생성")
+    void upsertCartTest1() {
+        // given, when
+        cartRepository.upsert(1L, 1L, 1L, 1L, null);
+
+        // then
+        Assertions.assertEquals(1, cartRepository.findAll().size());
+    }
+
+    @Test
+    @DisplayName("cart update - 개수 추가")
+    void upsertCartTest2() {
         // given
-        cartRepository.save(Cart.init(1L, 1L, 1L, 10L, ""));
-        cartRepository.save(Cart.init(2L, 1L, 1L, 10L, ""));
-
-        Cart cart1 = cartRepository.findById(1L).orElseThrow();
-        cart1.getCartItems().add(Cart.CartItem.create(1L, 2L, 20L, ""));
-        cart1.getCartItems().add(Cart.CartItem.create(2L, 2L, 20L, ""));
-        cartRepository.save(cart1);
-
-        Cart cart2 = cartRepository.findById(2L).orElseThrow();
-        cart2.getCartItems().add(Cart.CartItem.create(1L, 2L, 20L, ""));
-        cart2.getCartItems().add(Cart.CartItem.create(2L, 2L, 20L, ""));
-        cartRepository.save(cart2);
+        cartRepository.save(Cart.create(1L, 1L, 1L, 1L));
 
         // when
-        cartRepository.delete(cart1.getMemberId(),
+        cartRepository.upsert(1L, 1L, 1L, 10L, null);
+
+        // then
+        Assertions.assertEquals(11L, cartRepository.findAll().get(0).getQuantity());
+    }
+
+    @Test
+    @DisplayName("cart update - 개수와 마지막 추천인 수정")
+    void upsertCartTest4() {
+        // given
+        cartRepository.save(Cart.create(1L, 1L, 1L, 1L));
+
+        // when
+        cartRepository.upsert(1L, 1L, 1L, 10L, "AAAA");
+
+        // then
+        Assertions.assertEquals(11L, cartRepository.findAll().get(0).getQuantity());
+        Assertions.assertEquals("AAAA", cartRepository.findAll().get(0).getLastMemberCode());
+    }
+
+    @Test
+    @DisplayName("document의 원소 중 productId와 productSizeId가 일치하는 값들만 삭제된다")
+    void deleteCartTest() {
+        // given
+        cartRepository.save(Cart.create(1L, 1L, 1L, 10L, ""));
+        cartRepository.save(Cart.create(1L, 1L, 2L, 20L));
+        cartRepository.save(Cart.create(1L, 2L, 2L, 10L));
+
+        // when
+        cartRepository.delete(1L,
                 List.of(DeleteCartRequest.builder().productId(1L).productSizeId(1L).build(),
                         DeleteCartRequest.builder().productId(1L).productSizeId(2L).build())
         );
 
         // then
-        Cart deletedCart1 = cartRepository.findById(cart1.getMemberId()).orElseThrow();
-        Assertions.assertEquals(deletedCart1.getCartItems().size(), 1);
-        Assertions.assertEquals(deletedCart1.getCartItems().get(0).getProductId(), 2L);
-        Assertions.assertEquals(deletedCart1.getCartItems().get(0).getProductSizeId(), 2L);
-
-        Cart deletedCart2 = cartRepository.findById(cart2.getMemberId()).orElseThrow();
-        Assertions.assertEquals(deletedCart2.getCartItems().size(), 3);
+        Assertions.assertEquals(1L, cartRepository.findAll().size());
     }
 
     @Test
     @DisplayName("장바구니 페이지네이션 조회")
     void readPagesTest() {
-        cartRepository.save(Cart.builder()
-                .memberId(1L)
-                .cartItems(
-                        List.of(Cart.CartItem.create(1L, 1L, 1L, ""),
-                                Cart.CartItem.create(1L, 2L, 1L, ""),
-                                Cart.CartItem.create(2L, 1L, 1L, ""))
-                )
-                .build());
+        cartRepository.saveAll(List.of(
+                Cart.create(1L, 1L, 1L, 10L),
+                Cart.create(1L, 2L, 1L, 10L, "AAA"),
+                Cart.create(1L, 1L, 2L, 20L, "BBB")
+        ));
 
-        Page<Cart.CartItem> cartItems = cartRepository.readPages(1L, Pageable.ofSize(5));
+        Page<Cart> carts = cartRepository.readPages(1L, Pageable.ofSize(5));
 
-        Assertions.assertEquals(cartItems.getContent().size(), 3);
-        Assertions.assertEquals(cartItems.getTotalElements(), 3);
-        Assertions.assertEquals(cartItems.getTotalPages(), 1);
+        Assertions.assertEquals(carts.getContent().size(), 3);
+        Assertions.assertEquals(carts.getTotalElements(), 3);
+        Assertions.assertEquals(carts.getTotalPages(), 1);
     }
 }
