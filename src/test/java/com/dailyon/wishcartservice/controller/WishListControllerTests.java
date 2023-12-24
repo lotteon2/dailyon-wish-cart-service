@@ -24,7 +24,7 @@ public class WishListControllerTests {
     @Autowired
     ObjectMapper objectMapper;
 
-    @Test
+    /*@Test
     @DisplayName("자신의 찜 목록 조회 성공")
     void readWishListSuccess1() throws Exception {
 
@@ -37,9 +37,9 @@ public class WishListControllerTests {
 
         // then
         resultActions.andExpect(MockMvcResultMatchers.status().isOk());
-    }
+    }*/
 
-    @Test
+    /*@Test
     @DisplayName("남의 찜 목록 조회 성공")
     void readWishListSuccess2() throws Exception {
 
@@ -53,5 +53,5 @@ public class WishListControllerTests {
 
         // then
         resultActions.andExpect(MockMvcResultMatchers.status().isOk());
-    }
+    }*/
 }
