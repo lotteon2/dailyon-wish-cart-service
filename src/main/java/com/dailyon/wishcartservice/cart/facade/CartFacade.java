@@ -1,10 +1,10 @@
 package com.dailyon.wishcartservice.cart.facade;
 
+import com.dailyon.wishcartservice.cart.document.Cart;
 import com.dailyon.wishcartservice.cart.dto.request.DeleteCartListRequest;
 import com.dailyon.wishcartservice.cart.dto.request.UpsertCartRequest;
 import com.dailyon.wishcartservice.cart.dto.response.ReadCartPageResponse;
 
-import static com.dailyon.wishcartservice.cart.document.Cart.CartItem;
 import com.dailyon.wishcartservice.cart.service.CartService;
 import com.dailyon.wishcartservice.common.feign.client.ProductFeignClient;
 import com.dailyon.wishcartservice.common.feign.request.ReadWishCartProductRequest;
@@ -32,7 +32,7 @@ public class CartFacade {
     }
 
     public ReadCartPageResponse read(Long memberId, Pageable pageable) {
-        Page<CartItem> cartItems = cartService.readPages(memberId, pageable);
+        Page<Cart> cartItems = cartService.readPages(memberId, pageable);
 
         List<ReadWishCartProductRequest> requests = cartItems.stream()
                 .map(ReadWishCartProductRequest::fromEntity)
