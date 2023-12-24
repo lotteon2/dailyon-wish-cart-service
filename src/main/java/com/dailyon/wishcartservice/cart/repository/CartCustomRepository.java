@@ -14,4 +14,6 @@ public interface CartCustomRepository {
     void delete(Long memberId, List<DeleteCartRequest> requests);
 
     Page<Cart> readPages(Long memberId, Pageable pageable);
+
+    Cart update(Long memberId, Long productId, Long productSizeId, Long quantity);
 }
