@@ -25,5 +25,6 @@ public class ReadWishCartProductMapResponse {
         private String brandName;
         private String productName;
         private String gender;
+        private Long productQuantity;
     }
 }
