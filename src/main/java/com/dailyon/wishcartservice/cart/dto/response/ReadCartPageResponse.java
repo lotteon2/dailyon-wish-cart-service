@@ -46,6 +46,8 @@ public class ReadCartPageResponse {
         private String brandName;
         private String gender;
         private Long productQuantity;
+        private Integer productPrice;
+        private String imgUrl;
 
         public static ReadCartResponse create(Cart cart, ReadWishCartProductResponse response) {
             return ReadCartResponse.builder()
@@ -58,6 +60,8 @@ public class ReadCartPageResponse {
                     .brandName(response.getBrandName())
                     .gender(response.getGender())
                     .productQuantity(response.getProductQuantity())
+                    .productPrice(response.getProductPrice())
+                    .imgUrl(response.getImgUrl())
                     .build();
         }
     }
