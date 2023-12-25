@@ -21,10 +21,9 @@ public class WishListCustomRepositoryImpl implements WishListCustomRepository {
     @Override
     public Page<WishList> readWishListPages(Long memberId, Pageable pageable) {
         Query query = Query.query(Criteria.where("memberId").is(memberId));
-
         long totalCounts = mongoTemplate.count(query, WishList.class);
-        query.with(pageable);
 
+        query.with(pageable);
         List<WishList> wishLists = mongoTemplate.find(query, WishList.class);
 
         return new PageImpl<>(wishLists, pageable, totalCounts);

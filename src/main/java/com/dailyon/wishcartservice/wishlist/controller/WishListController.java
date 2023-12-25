@@ -10,6 +10,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RequestMapping("/wish-list")
 @RestController
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class WishListController {
 
     @PutMapping
     public ResponseEntity<Void> toggleWishList(@RequestHeader(name = "memberId") Long memberId,
-                                               @RequestBody ToggleWishListRequest request) {
+                                               @Valid @RequestBody ToggleWishListRequest request) {
         wishListFacade.toggleWishList(memberId, request);
         return ResponseEntity.ok().build();
     }

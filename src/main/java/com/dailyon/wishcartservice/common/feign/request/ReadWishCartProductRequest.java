@@ -1,7 +1,6 @@
 package com.dailyon.wishcartservice.common.feign.request;
 
-import static com.dailyon.wishcartservice.cart.entity.Cart.CartItem;
-
+import com.dailyon.wishcartservice.cart.document.Cart;
 import com.dailyon.wishcartservice.wishlist.document.WishList;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,10 +15,10 @@ public class ReadWishCartProductRequest {
     private Long productId;
     private Long productSizeId;
 
-    public static ReadWishCartProductRequest fromEntity(CartItem cartItem) {
+    public static ReadWishCartProductRequest fromEntity(Cart cart) {
         return ReadWishCartProductRequest.builder()
-                .productId(cartItem.getProductId())
-                .productSizeId(cartItem.getProductSizeId())
+                .productId(cart.getProductId())
+                .productSizeId(cart.getProductSizeId())
                 .build();
     }
 

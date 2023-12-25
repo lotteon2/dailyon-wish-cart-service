@@ -1,8 +1,7 @@
 package com.dailyon.wishcartservice.cart.repository;
 
 import com.dailyon.wishcartservice.cart.dto.request.UpsertCartRequest;
-import com.dailyon.wishcartservice.cart.entity.Cart;
-import static com.dailyon.wishcartservice.cart.entity.Cart.CartItem;
+import com.dailyon.wishcartservice.cart.document.Cart;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,45 +23,45 @@ import java.util.Optional;
 public class CartCustomRepositoryImpl implements CartCustomRepository {
     private final MongoTemplate mongoTemplate;
 
-    public void upsert(Long memberId, UpsertCartRequest upsertCartRequest) {
+    @Override
+    public Cart upsert(Long memberId, Long productId, Long productSizeId, Long quantity, String lastMemberCode) {
         Query query = Query.query(Criteria.where("memberId").is(memberId)
-                .and("cartItems.productId").is(upsertCartRequest.getProductId())
-                .and("cartItems.productSizeId").is(upsertCartRequest.getProductSizeId()));
-        Update update = new Update().set("cartItems.$.quantity", upsertCartRequest.getQuantity());
-        Optional.ofNullable(upsertCartRequest.getLastMemberCode())
-                .ifPresent(code -> update.set("cartItems.$.lastMemberCode", code));
-        mongoTemplate.upsert(query, update, Cart.class);
+                .and("productId").is(productId)
+                .and("productSizeId").is(productSizeId));
+
+        Cart cart = mongoTemplate.findOne(query, Cart.class);
+        if(cart == null) { // create, 추천인 코드 분기 처리
+            cart = Optional.ofNullable(lastMemberCode)
+                    .map(code -> Cart.create(memberId, productId, productSizeId, quantity, lastMemberCode))
+                    .orElseGet(() -> Cart.create(memberId, productId, productSizeId, quantity));
+        } else { // update, 추천인 코드 분기 처리
+            cart.setQuantity(cart.getQuantity() + quantity);
+            Optional.ofNullable(lastMemberCode).ifPresent(cart::setLastMemberCode);
+        }
+        return mongoTemplate.save(cart);
     }
 
+    @Override
     public void delete(Long memberId, List<DeleteCartRequest> requests) {
         BulkOperations bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Cart.class);
 
-        for (DeleteCartRequest request : requests) {
-            Query query = Query.query(Criteria.where("memberId").is(memberId)
-                    .andOperator(Criteria.where("cartItems").elemMatch(
-                            Criteria.where("productId").is(request.getProductId())
-                                    .and("productSizeId").is(request.getProductSizeId())
-                    )));
-            Update update = new Update().pull("cartItems",
-                    Query.query(Criteria.where("productId").is(request.getProductId())
-                            .and("productSizeId").is(request.getProductSizeId())
-                    ));
-            bulkOps.updateOne(query, update);
-        }
+        requests.forEach(request -> bulkOps.remove(
+                Query.query(Criteria.where("memberId").is(memberId)
+                        .and("productId").is(request.getProductId())
+                        .and("productSizeId").is(request.getProductSizeId()))
+        ));
 
         bulkOps.execute();
     }
 
     @Override
-    public Page<CartItem> readPages(Long memberId, Pageable pageable) {
+    public Page<Cart> readPages(Long memberId, Pageable pageable) {
         Query query = Query.query(Criteria.where("memberId").is(memberId));
-        query.fields().include("cartItems");
-        query.addCriteria(Criteria.where("cartItems").exists(true));
-
         long totalCount = mongoTemplate.count(query, Cart.class);
-        query.with(pageable);
 
-        Cart cart = mongoTemplate.findOne(query, Cart.class);
-        return new PageImpl<>(cart.getCartItems(), pageable, totalCount);
+        query.with(pageable);
+        List<Cart> carts = mongoTemplate.find(query, Cart.class);
+
+        return new PageImpl<>(carts, pageable, totalCount);
     }
 }

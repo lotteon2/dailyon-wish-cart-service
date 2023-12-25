@@ -1,8 +1,8 @@
 package com.dailyon.wishcartservice.cart.dto.response;
 
-import static com.dailyon.wishcartservice.cart.entity.Cart.CartItem;
 import static com.dailyon.wishcartservice.common.feign.response.ReadWishCartProductMapResponse.ReadWishCartProductResponse;
 
+import com.dailyon.wishcartservice.cart.document.Cart;
 import com.dailyon.wishcartservice.common.feign.response.ReadWishCartProductMapResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,12 +22,12 @@ public class ReadCartPageResponse {
     private Integer totalPages;
     private List<ReadCartResponse> responses;
 
-    public static ReadCartPageResponse create(Page<CartItem> cartItems, ReadWishCartProductMapResponse response) {
+    public static ReadCartPageResponse create(Page<Cart> carts, ReadWishCartProductMapResponse response) {
         return ReadCartPageResponse.builder()
-                .totalPages(cartItems.getTotalPages())
-                .totalElements(cartItems.getTotalElements())
-                .responses(cartItems.stream().map(
-                        cartItem -> ReadCartResponse.create(cartItem, response.getResponses().get(cartItem.toKey()))
+                .totalPages(carts.getTotalPages())
+                .totalElements(carts.getTotalElements())
+                .responses(carts.stream().map(
+                        cart -> ReadCartResponse.create(cart, response.getResponses().get(cart.toKey()))
                 ).collect(Collectors.toList()))
                 .build();
     }
@@ -47,12 +47,12 @@ public class ReadCartPageResponse {
         private String gender;
         private Long productQuantity;
 
-        public static ReadCartResponse create(CartItem cartItem, ReadWishCartProductResponse response) {
+        public static ReadCartResponse create(Cart cart, ReadWishCartProductResponse response) {
             return ReadCartResponse.builder()
-                    .productId(cartItem.getProductId())
-                    .productSizeId(cartItem.getProductSizeId())
-                    .quantity(cartItem.getQuantity())
-                    .lastMemberCode(cartItem.getLastMemberCode())
+                    .productId(cart.getProductId())
+                    .productSizeId(cart.getProductSizeId())
+                    .quantity(cart.getQuantity())
+                    .lastMemberCode(cart.getLastMemberCode())
                     .productSizeName(response.getProductSizeName())
                     .productName(response.getProductName())
                     .brandName(response.getBrandName())
