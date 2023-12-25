@@ -39,12 +39,13 @@ public class ReadCartPageResponse {
     public static class ReadCartResponse {
         private Long productId;
         private Long productSizeId;
-        private Integer quantity;
+        private Long quantity;
         private String lastMemberCode;
         private String productSizeName;
         private String productName;
         private String brandName;
         private String gender;
+        private Long productQuantity;
 
         public static ReadCartResponse create(CartItem cartItem, ReadWishCartProductResponse response) {
             return ReadCartResponse.builder()
@@ -56,6 +57,7 @@ public class ReadCartPageResponse {
                     .productName(response.getProductName())
                     .brandName(response.getBrandName())
                     .gender(response.getGender())
+                    .productQuantity(response.getProductQuantity())
                     .build();
         }
     }

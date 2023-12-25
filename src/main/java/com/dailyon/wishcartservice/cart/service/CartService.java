@@ -21,14 +21,21 @@ public class CartService {
     @Transactional
     public Cart upsert(Long memberId, UpsertCartRequest upsertCartRequest) {
         Optional<Cart> cart = cartRepository.findById(memberId);
-        if(cart.isEmpty()) {
-            return cartRepository.save(Cart.init(memberId,
-                    upsertCartRequest.getProductId(),
-                    upsertCartRequest.getProductSizeId(),
-                    upsertCartRequest.getQuantity(),
-                    upsertCartRequest.getLastMemberCode()
-            ));
+        if(cart.isEmpty()) { // cart document 자체가 없을 때는 document를 새로 생성
+            if(upsertCartRequest.getLastMemberCode() == null) {
+                return cartRepository.save(Cart.init(memberId,
+                        upsertCartRequest.getProductId(),
+                        upsertCartRequest.getProductSizeId(),
+                        upsertCartRequest.getQuantity()));
+            } else {
+                return cartRepository.save(Cart.init(memberId,
+                        upsertCartRequest.getProductId(),
+                        upsertCartRequest.getProductSizeId(),
+                        upsertCartRequest.getQuantity(),
+                        upsertCartRequest.getLastMemberCode()));
+            }
         } else {
+            // cartItems 안에 해당 cartItem이 존재한다면 값 update 후 return
             for(Cart.CartItem cartItem: cart.get().getCartItems()) {
                 if(cartItem.getProductId().equals(upsertCartRequest.getProductId()) &&
                    cartItem.getProductSizeId().equals(upsertCartRequest.getProductSizeId())) {
@@ -39,12 +46,19 @@ public class CartService {
                 }
             }
 
-            cart.get().getCartItems().add(Cart.CartItem.init(
-                    upsertCartRequest.getProductId(),
-                    upsertCartRequest.getProductSizeId(),
-                    upsertCartRequest.getQuantity(),
-                    upsertCartRequest.getLastMemberCode()));
-
+            // cartItem 안에 해당 cartItem이 존재하지 않는다면 create
+            if(upsertCartRequest.getLastMemberCode() == null) {
+                cart.get().getCartItems().add(Cart.CartItem.create(
+                        upsertCartRequest.getProductId(),
+                        upsertCartRequest.getProductSizeId(),
+                        upsertCartRequest.getQuantity()));
+            } else {
+                cart.get().getCartItems().add(Cart.CartItem.create(
+                        upsertCartRequest.getProductId(),
+                        upsertCartRequest.getProductSizeId(),
+                        upsertCartRequest.getQuantity(),
+                        upsertCartRequest.getLastMemberCode()));
+            }
             return cartRepository.save(cart.get());
         }
     }

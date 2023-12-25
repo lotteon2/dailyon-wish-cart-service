@@ -1,6 +1,5 @@
 package com.dailyon.wishcartservice.respository;
 
-import com.dailyon.wishcartservice.cart.dto.request.DeleteCartListRequest;
 import com.dailyon.wishcartservice.cart.entity.Cart;
 import com.dailyon.wishcartservice.cart.repository.CartRepository;
 import org.junit.jupiter.api.Assertions;
@@ -26,17 +25,17 @@ public class CartRepositoryTests {
     @DisplayName("document의 원소 중 productId와 productSizeId가 일치하는 값들만 삭제된다")
     void deleteTest() {
         // given
-        cartRepository.save(Cart.init(1L, 1L, 1L, 10, ""));
-        cartRepository.save(Cart.init(2L, 1L, 1L, 10, ""));
+        cartRepository.save(Cart.init(1L, 1L, 1L, 10L, ""));
+        cartRepository.save(Cart.init(2L, 1L, 1L, 10L, ""));
 
         Cart cart1 = cartRepository.findById(1L).orElseThrow();
-        cart1.getCartItems().add(Cart.CartItem.init(1L, 2L, 20, ""));
-        cart1.getCartItems().add(Cart.CartItem.init(2L, 2L, 20, ""));
+        cart1.getCartItems().add(Cart.CartItem.create(1L, 2L, 20L, ""));
+        cart1.getCartItems().add(Cart.CartItem.create(2L, 2L, 20L, ""));
         cartRepository.save(cart1);
 
         Cart cart2 = cartRepository.findById(2L).orElseThrow();
-        cart2.getCartItems().add(Cart.CartItem.init(1L, 2L, 20, ""));
-        cart2.getCartItems().add(Cart.CartItem.init(2L, 2L, 20, ""));
+        cart2.getCartItems().add(Cart.CartItem.create(1L, 2L, 20L, ""));
+        cart2.getCartItems().add(Cart.CartItem.create(2L, 2L, 20L, ""));
         cartRepository.save(cart2);
 
         // when
@@ -61,9 +60,9 @@ public class CartRepositoryTests {
         cartRepository.save(Cart.builder()
                 .memberId(1L)
                 .cartItems(
-                        List.of(Cart.CartItem.init(1L, 1L, 1, ""),
-                                Cart.CartItem.init(1L, 1L, 1, ""),
-                                Cart.CartItem.init(1L, 1L, 1, ""))
+                        List.of(Cart.CartItem.create(1L, 1L, 1L, ""),
+                                Cart.CartItem.create(1L, 2L, 1L, ""),
+                                Cart.CartItem.create(2L, 1L, 1L, ""))
                 )
                 .build());
 
