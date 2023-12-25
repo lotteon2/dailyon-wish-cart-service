@@ -46,6 +46,7 @@ public class ReadWishListPageResponse {
         private String brandName;
         private String gender;
         private String imgUrl;
+        private Integer productPrice;
 
         public static ReadWishListResponse create(WishList wishList, ReadWishCartProductResponse response) {
             return ReadWishListResponse.builder()
@@ -54,6 +55,7 @@ public class ReadWishListPageResponse {
                     .productName(response.getProductName())
                     .productSizeName(response.getProductSizeName())
                     .brandName(response.getBrandName())
+                    .productPrice(response.getProductPrice())
                     .gender(response.getGender())
                     .imgUrl(response.getImgUrl())
                     .build();
