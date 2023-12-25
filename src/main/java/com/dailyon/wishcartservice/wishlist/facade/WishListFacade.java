@@ -41,6 +41,6 @@ public class WishListFacade {
     }
 
     private boolean isMine(Long memberId, Long targetId) {
-        return targetId == null || targetId.equals(memberId);
+        return targetId != null && targetId.equals(memberId);
     }
 }
