@@ -2,6 +2,7 @@ package com.dailyon.wishcartservice.respository;
 
 import com.dailyon.wishcartservice.cart.document.Cart;
 import com.dailyon.wishcartservice.cart.repository.CartRepository;
+import com.dailyon.wishcartservice.common.exception.NotExistsException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -86,16 +87,41 @@ public class CartRepositoryTests {
     @Test
     @DisplayName("장바구니 페이지네이션 조회")
     void readPagesTest() {
+        // given
         cartRepository.saveAll(List.of(
                 Cart.create(1L, 1L, 1L, 10L),
                 Cart.create(1L, 2L, 1L, 10L, "AAA"),
                 Cart.create(1L, 1L, 2L, 20L, "BBB")
         ));
 
+        // when
         Page<Cart> carts = cartRepository.readPages(1L, Pageable.ofSize(5));
 
+        // then
         Assertions.assertEquals(carts.getContent().size(), 3);
         Assertions.assertEquals(carts.getTotalElements(), 3);
         Assertions.assertEquals(carts.getTotalPages(), 1);
+    }
+
+    @Test
+    @DisplayName("장바구니 개수 수정 성공")
+    void updateCartSuccess() {
+        // given
+        cartRepository.save(Cart.create(1L, 1L, 1L, 1L));
+
+        // when
+        Cart modified = cartRepository.update(1L, 1L, 1L, 10L);
+
+        // then
+        Assertions.assertEquals(10, modified.getQuantity());
+    }
+
+    @Test
+    @DisplayName("장바구니 개수 수정 실패")
+    void updateCartFail() {
+        // given, when, then
+        Assertions.assertThrows(
+                NotExistsException.class,
+                () -> cartRepository.update(1L, 1L, 1L, 10L));
     }
 }

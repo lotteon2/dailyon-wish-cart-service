@@ -1,12 +1,13 @@
 package com.dailyon.wishcartservice.cart.repository;
 
-import com.dailyon.wishcartservice.cart.dto.request.UpsertCartRequest;
 import com.dailyon.wishcartservice.cart.document.Cart;
+import com.dailyon.wishcartservice.common.exception.NotExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.BulkOperations;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -63,5 +64,22 @@ public class CartCustomRepositoryImpl implements CartCustomRepository {
         List<Cart> carts = mongoTemplate.find(query, Cart.class);
 
         return new PageImpl<>(carts, pageable, totalCount);
+    }
+
+    @Override
+    public Cart update(Long memberId, Long productId, Long productSizeId, Long quantity) {
+        Query query = Query.query(Criteria.where("memberId").is(memberId)
+                .and("productId").is(productId)
+                .and("productSizeId").is(productSizeId));
+
+        Update update = Update.update("quantity", quantity);
+
+        Cart modified = mongoTemplate.findAndModify(query, update, FindAndModifyOptions.options().returnNew(true), Cart.class);
+
+        Optional.ofNullable(modified)
+                .map(mongoTemplate::save)
+                .orElseThrow(() -> new NotExistsException(NotExistsException.CART_NOT_FOUND));
+
+        return modified;
     }
 }
