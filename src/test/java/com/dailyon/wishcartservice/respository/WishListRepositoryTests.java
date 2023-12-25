@@ -59,4 +59,19 @@ public class WishListRepositoryTests {
 
         Assertions.assertEquals(1, wishListRepository.findAll().size());
     }
+
+    @Test
+    @DisplayName("상품 페이지에서 찜 목록 조회")
+    void readWishListFromProductTest() {
+        // given
+        wishListRepository.save(WishList.create(1L, 1L, 1L));
+        wishListRepository.save(WishList.create(1L, 1L, 2L));
+        wishListRepository.save(WishList.create(1L, 1L, 3L));
+
+        // when
+        List<WishList> wishLists = wishListRepository.findByMemberIdAndProductId(1L, 1L);
+
+        // then
+        Assertions.assertEquals(3, wishLists.size());
+    }
 }
