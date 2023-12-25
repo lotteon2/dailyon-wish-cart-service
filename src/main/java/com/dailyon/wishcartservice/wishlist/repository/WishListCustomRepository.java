@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WishListCustomRepository {
     Page<WishList> readWishListPages(Long memberId, Pageable pageable);
+    WishList toggleWishList(Long memberId, Long productId, Long productSizeId);
 }

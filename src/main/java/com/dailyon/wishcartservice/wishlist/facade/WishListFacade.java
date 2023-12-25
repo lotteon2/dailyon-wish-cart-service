@@ -4,6 +4,7 @@ import com.dailyon.wishcartservice.common.feign.client.ProductFeignClient;
 import com.dailyon.wishcartservice.common.feign.request.ReadWishCartProductRequest;
 import com.dailyon.wishcartservice.common.feign.response.ReadWishCartProductMapResponse;
 import com.dailyon.wishcartservice.wishlist.document.WishList;
+import com.dailyon.wishcartservice.wishlist.dto.request.ToggleWishListRequest;
 import com.dailyon.wishcartservice.wishlist.dto.response.ReadWishListPageResponse;
 import com.dailyon.wishcartservice.wishlist.service.WishListService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,10 @@ import java.util.stream.Collectors;
 public class WishListFacade {
     private final WishListService wishListService;
     private final ProductFeignClient productFeignClient;
+
+    public WishList toggleWishList(Long memberId, ToggleWishListRequest request) {
+        return wishListService.toggleWishList(memberId, request);
+    }
 
     public ReadWishListPageResponse readWishLists(Long memberId, Long targetId, Pageable pageable) {
         boolean isMine = isMine(memberId, targetId);

@@ -1,6 +1,7 @@
 package com.dailyon.wishcartservice.wishlist.service;
 
 import com.dailyon.wishcartservice.wishlist.document.WishList;
+import com.dailyon.wishcartservice.wishlist.dto.request.ToggleWishListRequest;
 import com.dailyon.wishcartservice.wishlist.repository.WishListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,5 +15,9 @@ public class WishListService {
 
     public Page<WishList> readWishListPages(Long memberId, Pageable pageable) {
         return wishListRepository.readWishListPages(memberId, pageable);
+    }
+
+    public WishList toggleWishList(Long memberId, ToggleWishListRequest request) {
+        return wishListRepository.toggleWishList(memberId, request.getProductId(), request.getProductSizeId());
     }
 }
