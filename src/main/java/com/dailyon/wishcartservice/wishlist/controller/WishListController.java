@@ -1,6 +1,7 @@
 package com.dailyon.wishcartservice.wishlist.controller;
 
 import com.dailyon.wishcartservice.wishlist.dto.request.ToggleWishListRequest;
+import com.dailyon.wishcartservice.wishlist.dto.response.ReadWishListFromProductResponse;
 import com.dailyon.wishcartservice.wishlist.dto.response.ReadWishListPageResponse;
 import com.dailyon.wishcartservice.wishlist.facade.WishListFacade;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,13 @@ public class WishListController {
             @RequestHeader(name = "targetId", required = false) Long targetId,
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(wishListFacade.readWishLists(memberId, targetId, pageable));
+    }
+
+    @GetMapping("/{productId}")
+    public ResponseEntity<ReadWishListFromProductResponse> readWishListFromProduct(
+            @RequestHeader(name = "memberId") Long memberId,
+            @PathVariable Long productId) {
+        return ResponseEntity.ok(wishListFacade.readWishListFromProduct(memberId, productId));
     }
 
     @PutMapping
