@@ -5,6 +5,7 @@ import com.dailyon.wishcartservice.common.feign.request.ReadWishCartProductReque
 import com.dailyon.wishcartservice.common.feign.response.ReadWishCartProductMapResponse;
 import com.dailyon.wishcartservice.wishlist.document.WishList;
 import com.dailyon.wishcartservice.wishlist.dto.request.ToggleWishListRequest;
+import com.dailyon.wishcartservice.wishlist.dto.response.ReadWishListFromProductResponse;
 import com.dailyon.wishcartservice.wishlist.dto.response.ReadWishListPageResponse;
 import com.dailyon.wishcartservice.wishlist.service.WishListService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,10 @@ public class WishListFacade {
         ).getBody();
 
         return ReadWishListPageResponse.create(isMine, pages, response);
+    }
+
+    public ReadWishListFromProductResponse readWishListFromProduct(Long memberId, Long productId) {
+        return ReadWishListFromProductResponse.fromEntity(wishListService.readWishListFromProduct(memberId, productId));
     }
 
     private boolean isMine(Long memberId, Long targetId) {
