@@ -28,7 +28,7 @@ public class WishListFacade {
 
     public ReadWishListPageResponse readWishLists(Long memberId, Long targetId, Pageable pageable) {
         boolean isMine = isMine(memberId, targetId);
-        Page<WishList> pages = wishListService.readWishListPages(targetId, pageable);
+        Page<WishList> pages = wishListService.readWishListPages(isMine ? memberId : targetId, pageable);
         ReadWishCartProductMapResponse response = productFeignClient.readWishCartProducts(
                 pages.stream().map(ReadWishCartProductRequest::fromEntity).collect(Collectors.toList())
         ).getBody();
@@ -41,6 +41,6 @@ public class WishListFacade {
     }
 
     private boolean isMine(Long memberId, Long targetId) {
-        return targetId != null && targetId.equals(memberId);
+        return targetId == null || memberId.equals(targetId);
     }
 }
