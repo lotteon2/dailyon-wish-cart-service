@@ -12,7 +12,7 @@ spring:
   # mongodb settings
   data:
     mongodb:
-      uri: mongodb://root:11111111@localhost:27017/wish-cart-service?authSource=admin
+      uri: mongodb://root:11111111@wish-cart-db-service:27017/wish-cart-service?authSource=admin
 eureka:
   client:
     register-with-eureka: true
