@@ -12,9 +12,7 @@ spring:
   # mongodb settings
   data:
     mongodb:
-      username: root
-      password: 11111111
-      uri: mongodb://localhost:27017/wish-cart-service
+      uri: mongodb://root:11111111@localhost:27017/wish-cart-service?authSource=admin
 eureka:
   client:
     register-with-eureka: true
@@ -22,4 +20,11 @@ eureka:
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka
   instance:
-    instance-id: ${spring.application.name}:${server.port}
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+
+endpoint.product-service: localhost:8085

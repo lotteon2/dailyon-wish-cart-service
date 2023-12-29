@@ -1,0 +1,17 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+  cloud:
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+  mongodb:
+    embedded:
+      version: 4.0.21
+logging:
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+endpoint.product-service: localhost:8085
