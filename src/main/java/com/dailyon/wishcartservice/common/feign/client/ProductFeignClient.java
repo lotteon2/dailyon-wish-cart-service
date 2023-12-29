@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 @FeignClient(
-        name = "product-service",
+        name = "productFeignClient",
         url = "${endpoint.product-service}",
         configuration = FeignClientConfig.class
 )
