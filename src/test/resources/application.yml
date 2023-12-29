@@ -10,6 +10,9 @@ spring:
   mongodb:
     embedded:
       version: 4.0.21
+  kafka:
+    consumer:
+      group-id: test
 logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG

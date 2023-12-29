@@ -17,7 +17,7 @@ public class FeignClientConfig {
 
     @Bean
     public ErrorDecoder errorDecoder() {
-        return new ErrorDecoder.Default();
+        return new CustomErrorDecoder();
     }
 
     @Bean
