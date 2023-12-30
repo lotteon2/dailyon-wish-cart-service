@@ -7,6 +7,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
 @EnableFeignClients
 @EnableMongoAuditing
 @EnableMongoRepositories
@@ -14,8 +17,12 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @SpringBootApplication
 public class WishCartServiceApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(WishCartServiceApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(WishCartServiceApplication.class, args);
+  }
 
+  @PostConstruct
+  public void setTimezoneToSeoul() {
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+  }
 }
