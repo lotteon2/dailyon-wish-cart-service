@@ -21,6 +21,7 @@ public class ReadWishCartProductMapResponse {
     public static class ReadWishCartProductResponse {
         private Long productId;
         private Long productSizeId;
+        private Long categoryId;
         private String productSizeName;
         private String brandName;
         private String productName;

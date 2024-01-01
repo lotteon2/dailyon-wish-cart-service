@@ -1,5 +1,6 @@
 package com.dailyon.wishcartservice.cart.dto.request;
 
+import static dailyon.domain.order.kafka.OrderDTO.ProductInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,5 +28,12 @@ public class DeleteCartListRequest {
         private Long productId;
         @NotNull(message = "치수를 입력해주세요")
         private Long productSizeId;
+
+        public static DeleteCartRequest fromDto(ProductInfo productInfo) {
+            return DeleteCartRequest.builder()
+                    .productId(productInfo.getProductId())
+                    .productSizeId(productInfo.getSizeId())
+                    .build();
+        }
     }
 }
