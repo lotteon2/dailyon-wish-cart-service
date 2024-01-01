@@ -41,6 +41,7 @@ public class ReadWishListPageResponse {
     public static class ReadWishListResponse {
         private Long productId;
         private Long productSizeId;
+        private Long categoryId;
         private String productName;
         private String productSizeName;
         private String brandName;
@@ -52,6 +53,7 @@ public class ReadWishListPageResponse {
             return ReadWishListResponse.builder()
                     .productId(wishList.getProductId())
                     .productSizeId(wishList.getProductSizeId())
+                    .categoryId(response.getCategoryId())
                     .productName(response.getProductName())
                     .productSizeName(response.getProductSizeName())
                     .brandName(response.getBrandName())
