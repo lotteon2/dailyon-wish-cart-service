@@ -46,3 +46,14 @@ eureka:
     prefer-ip-address: true
 
 endpoint.product-service: product-service:8085
+
+logging:
+  level:
+    org:
+      apache:
+        kafka: ERROR
+        zookeeper: ERROR
+      kafka: ERROR
+    com:
+      amazonaws:
+        xray: DEBUG
